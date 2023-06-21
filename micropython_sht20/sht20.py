@@ -13,13 +13,9 @@ MicroPython Driver for the Sensirion SHT20 Temperature Sensor
 
 """
 
+import time
+import struct
 from micropython import const
-from micropython_sht20.i2c_helpers import CBits, RegisterStruct
-
-try:
-    from typing import Tuple
-except ImportError:
-    pass
 
 
 __version__ = "0.0.0+auto.0"
@@ -31,6 +27,7 @@ _HUMIDITY = const(0xF5)
 _READ_USER1 = const(0xE7)
 _WRITE_USER1 = const(0xE6)
 _TEMP_RH_RES = (0, 1, 128, 129)
+
 
 class SHT20:
     """Driver for the SHT20 Sensor connected over I2C.
@@ -66,9 +63,6 @@ class SHT20:
     def __init__(self, i2c, address: int = 0x40) -> None:
         self._i2c = i2c
         self._address = address
-
-        if self._device_id != xxx:
-            raise RuntimeError("Failed to find SHT20")
 
     def reset(self) -> None:
         """Perform a soft reset of the sensor, resetting all settings to their power-on defaults"""
