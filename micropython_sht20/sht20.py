@@ -58,6 +58,9 @@ class SHT20:
 
     .. code-block:: python
 
+        temperature = sht20.temperature
+        humidity = sht20.humidity
+
     """
 
     def __init__(self, i2c, address: int = 0x40) -> None:

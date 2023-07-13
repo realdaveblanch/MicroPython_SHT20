@@ -17,7 +17,7 @@ print("Changed Resolution")
 print(sht.temp_rh_resolution)
 
 while True:
-    print("Temperature: {:.2f} C".format(sht.temperature))
-    print("Humidity: {:.2f} %%".format(sht.humidity))
+    print(f"Temperature: {sht.temperature:.2f}°C")
+    print(f"Humidity: {sht.humidity:.2%}%")
     print("")
     time.sleep(1)
