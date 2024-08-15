@@ -77,14 +77,21 @@ class SHT20:
         """The measured temperature in Celsius."""
         self._i2c.writeto(self._address, bytes([_TEMPERATURE]), False)
         data = bytearray(3)
-        while True:
-            # While busy, the sensor doesn't respond to reads.
+        max_attempts = 10  # Limitar el número de intentos
+        attempt = 0
+        while attempt < max_attempts:
             try:
                 self._i2c.readfrom_into(self._address, data)
                 if data[0] != 0xFF:  # Check if read succeeded.
                     break
             except OSError:
                 pass
+            attempt += 1
+            time.sleep(0.05)  # Espera corta antes de intentar de nuevo
+
+        if attempt == max_attempts:
+            raise RuntimeError("Failed to read temperature after multiple attempts")
+
         value, checksum = struct.unpack(">HB", data)
 
         if checksum != self._crc(data[:2]):
@@ -99,13 +106,21 @@ class SHT20:
         """The measured relative humidity in percent."""
         self._i2c.writeto(self._address, bytes([_HUMIDITY]), False)
         data = bytearray(3)
-        while True:
+        max_attempts = 10  # Limitar el número de intentos
+        attempt = 0
+        while attempt < max_attempts:
             try:
                 self._i2c.readfrom_into(self._address, data)
                 if data[0] != 0xFF:
                     break
             except OSError:
                 pass
+            attempt += 1
+            time.sleep(0.05)  # Espera corta antes de intentar de nuevo
+
+        if attempt == max_attempts:
+            raise RuntimeError("Failed to read humidity after multiple attempts")
+
         value, checksum = struct.unpack(">HB", data)
 
         if checksum != self._crc(data[:2]):
